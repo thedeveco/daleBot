@@ -28,8 +28,18 @@ We love contributions! Here’s how you can get started:
 
 `git clone https://github.com/yourusername/daleBot.git`
 
-3. Set Up Your Environment: Follow the Setup Guide below to prepare your development environment.
-4. Create a Feature Branch: Use a descriptive branch name, e.g., add-command-feature.
-5. Submit a Pull Request (PR): Open a PR to share your changes, and make sure to link any related issues.
+3. **Change to the new repo directory**
+
+`cd <repo directory`
+
+4. **Add remote**
+
+`git remote add <your tag> git@github.com:thedeveco/daleBot.git`
+
+where <your tag> is a tag name you can remember
+
+5. Set Up Your Environment: Follow the Setup Guide below to prepare your development environment.
+6. Create a Feature Branch: Use a descriptive branch name, e.g., add-command-feature.
+7. Submit a Pull Request (PR): Open a PR to share your changes, and make sure to link any related issues.
 
 You are now ready to start contributing to daleBot. 
