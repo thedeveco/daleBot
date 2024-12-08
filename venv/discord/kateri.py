@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-TOKEN = os.getenv('KATERI_DISCORD_BOT_TOKEN')
+TOKEN = os.getenv('KATERI_DISCORD_TOKEN')
 
 # Create a new bot client
 intents = discord.Intents.default()
