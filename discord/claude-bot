@@ -1,0 +1,117 @@
+#!/usr/bin/env python3
+import discord
+from discord.ext import commands
+import random
+import asyncio
+from os import getenv
+
+# Create a new bot instance with a specified command prefix
+INTENTS = discord.Intents.default()
+INTENTS.typing = False
+INTENTS.presences = False
+INTENTS.members = True
+INTENTS.messages = True
+INTENTS.guilds = True
+
+# Create bot instance with a command prefix
+bot = commands.Bot(command_prefix='!', intents=INTENTS)
+
+# Event: Bot is ready
+@bot.event
+async def on_ready():
+    print(f'{bot.user} has connected to Discord!')
+    await bot.change_presence(activity=discord.Game(name="!help for commands"))
+
+# Event: New member joins
+@bot.event
+async def on_member_join(member):
+    channel = member.guild.system_channel
+    if channel:
+        await channel.send(f'Welcome {member.mention} to the server! 👋')
+
+# Command: Ping
+@bot.command()
+async def ping(ctx):
+    """Check bot's latency"""
+    latency = round(bot.latency * 1000)
+    await ctx.send(f'Pong! Latency: {latency}ms')
+
+# Command: Roll dice
+@bot.command()
+async def roll(ctx, dice: str = '1d6'):
+    """Roll dice in NdN format"""
+    try:
+        rolls, limit = map(int, dice.split('d'))
+        results = [random.randint(1, limit) for _ in range(rolls)]
+        await ctx.send(f'Results: {results}\nSum: {sum(results)}')
+    except Exception:
+        await ctx.send('Format has to be in NdN (example: 2d6)')
+
+# Command: Poll
+@bot.command()
+async def poll(ctx, question, *options):
+    """Create a poll"""
+    if len(options) <= 1:
+        await ctx.send('You need at least 2 options for a poll!')
+        return
+
+    # Limit options to 10 due to emoji limitations
+    options = options[:10]
+
+    # Create embed for poll
+    embed = discord.Embed(title="📊 Poll", description=question, color=0x00ff00)
+
+    # Add options to embed
+    emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+    for idx, option in enumerate(options):
+        embed.add_field(name=f'Option {idx + 1}', value=f'{emojis[idx]} {option}', inline=False)
+
+    # Send poll and add reactions
+    poll_msg = await ctx.send(embed=embed)
+    for idx in range(len(options)):
+        await poll_msg.add_reaction(emojis[idx])
+
+# Command: Clear messages
+@bot.command()
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx, amount: int = 5):
+    """Clear specified number of messages"""
+    await ctx.channel.purge(limit=amount + 1)
+    msg = await ctx.send(f'Cleared {amount} messages!')
+    await asyncio.sleep(3)
+    await msg.delete()
+
+# Command: User info
+@bot.command()
+async def userinfo(ctx, member: discord.Member = None):
+    """Display info about a user"""
+    member = member or ctx.author
+    roles = [role.name for role in member.roles[1:]]  # Exclude @everyone
+
+    embed = discord.Embed(title=f"User Info - {member.name}", color=member.color)
+    embed.set_thumbnail(url=member.avatar.url if member.avatar else member.default_avatar.url)
+    embed.add_field(name="ID", value=member.id)
+    embed.add_field(name="Nickname", value=member.nick or "None")
+    embed.add_field(name="Joined Server", value=member.joined_at.strftime("%Y-%m-%d"))
+    embed.add_field(name="Joined Discord", value=member.created_at.strftime("%Y-%m-%d"))
+    embed.add_field(name=f"Roles ({len(roles)})", value=", ".join(roles) or "None", inline=False)
+
+    await ctx.send(embed=embed)
+
+# Error handling
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send('You do not have the required permissions to run this command.')
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
+        await ctx.send('Please pass in all required arguments.')
+    else:
+        await ctx.send(f'An error occurred: {str(error)}')
+
+# Replace with your bot token
+TOKEN = getenv('DALEBOT_DISCORD_TOKEN', "INVALID")
+
+if TOKEN == "INVALID":
+  print(f"Bot token is not valid!")
+else:
+  bot.run(TOKEN)
