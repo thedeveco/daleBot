@@ -1,4 +1,4 @@
 #!/bin/bash
-source /home/$USER/Repos/Github/thedeveco/daleBot/discord/bin/activate
-cd /home/$USER/Repos/Github/thedeveco/daleBot/discord
-/home/$USER/Repos/Github/thedeveco/daleBot/discord/daleBot
+source $HOME/Repos/Github/thedeveco/daleBot/discord/bin/activate
+cd $HOME/Repos/Github/thedeveco/daleBot/discord
+$HOME/Repos/Github/thedeveco/daleBot/discord/daleBot
