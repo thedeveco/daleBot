@@ -1,9 +1,9 @@
 # Create a new bot instance with a specified command prefix
-intents = discord.Intents.default()
-intents.typing = False
-intents.presences = False
-intents.members = True
-intents.messages = True
-intents.guilds = True
+INTENTS = discord.INTENTS.default()
+INTENTS.typing = False
+INTENTS.presences = False
+INTENTS.members = True
+INTENTS.messages = True
+INTENTS.guilds = True
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=INTENTS)
