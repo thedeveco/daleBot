@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+import discord
+from discord.ext import commands
+from os import getenv
+
+TOKEN = getenv('DALEBOT_DISCORD_TOKEN', "Default")
+print(f"TOKEN = '{TOKEN}'")
+
+# Create a new bot instance with a specified command prefix
+intents = discord.Intents.default()
+intents.typing = False
+intents.presences = False
+
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+@bot.event
+async def on_ready():
+    """Event triggered when the bot is ready"""
+    print(f"Logged in as {bot.user}")
+
+# Command to make the bot say hello
+@bot.command(name="hello")
+async def hello(ctx):
+    """Says hello back to the user"""
+    await ctx.send("Hello!")
+
+#
+# Does NOT like this commands
+#
+# Command to tell the user about the bot's help command
+#@bot.command(name="help")
+#async def help(ctx):
+#    """Lists available commands"""
+#    embed = discord.Embed(title=f"Help for {ctx.author.name}!", description="Available commands:", color=0x00ff00)
+#    embed.add_field(name="!hello", value="Say hello back to the user")
+#    await ctx.send(embed=embed)
+
+# Command to make the bot say goodbye
+@bot.command(name="goodbye")
+async def goodbye(ctx):
+    """Says goodbye and logs off"""
+    await ctx.send("Goodbye!")
+    await bot.close()
+
+# Run the bot with your token (use the copied token from Step 1)
+token = "YOUR_BOT_TOKEN"
+bot.run(TOKEN)
